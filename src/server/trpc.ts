@@ -10,6 +10,7 @@
 import { initTRPC } from '@trpc/server';
 import type * as trpcNext from '@trpc/server/adapters/next';
 import { ZodError } from 'zod';
+import { SuperJSON } from 'superjson';
 
 /**
  * Creates context for an incoming request
@@ -24,6 +25,7 @@ export async function createContext(opts: trpcNext.CreateNextContextOptions) {
 export type Context = Awaited<ReturnType<typeof createContext>>;
 
 const t = initTRPC.context<Context>().create({
+  transformer: SuperJSON,
   errorFormatter(opts) {
     return {
       ...opts.shape,

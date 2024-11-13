@@ -8,6 +8,7 @@ import {
 import { createTRPCNext } from '@trpc/next';
 import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
 import type { AppRouter } from '../pages/api/trpc/[trpc]';
+import { SuperJSON } from 'superjson';
 
 function getBaseUrl() {
   if (typeof window !== 'undefined') {
@@ -26,6 +27,7 @@ function getBaseUrl() {
 }
 
 export const trpc = createTRPCNext<AppRouter>({
+  transformer: SuperJSON,
   overrides: {
     useMutation: {
       /**
@@ -59,9 +61,11 @@ export const trpc = createTRPCNext<AppRouter>({
           condition: (op) => isNonJsonSerializable(op.input),
           true: httpLink({
             url,
+            transformer: SuperJSON,
           }),
           false: httpBatchLink({
             url,
+            transformer: SuperJSON,
           }),
         }),
       ],
